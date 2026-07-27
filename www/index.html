@@ -1,0 +1,263 @@
+﻿?<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>حاسبة أنظمة الطاقة الشمسية</title>
+<meta name="theme-color" content="#f59e0b">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="شمسي">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<link rel="icon" type="image/svg+xml" href="icons/icon.svg">
+<link rel="stylesheet" href="assets/styles.css">
+<style>
+/* Offline/install banner */
+#offlineBanner,#installBanner{display:none;text-align:center;padding:10px 16px;margin-bottom:16px;border-radius:8px;font-size:.88rem;font-weight:600}
+#offlineBanner{background:#fef2f2;color:var(--error);border:1px solid var(--error)}
+#installBanner{background:var(--warn-bg);color:var(--warn-color);border:1px solid var(--warn-border);cursor:pointer}
+#installBanner:hover{opacity:.9}
+.toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:#1e293b;color:#fff;padding:12px 24px;border-radius:8px;font-size:.9rem;z-index:9999;opacity:0;transition:opacity .3s;pointer-events:none}
+.toast.show{opacity:1}
+</style>
+</head>
+<body>
+<div class="container">
+<header>
+  <h1>☀️ حاسبة أنظمة الطاقة الشمسية</h1>
+  <p>أداة تصميم هندسية شاملة لأنظمة تخزين الطاقة الشمسية — مهندس: سليم السقاف | 770338777</p>
+</header>
+
+<div class="form-card">
+<div class="form-grid">
+
+<!-- Basic Inputs -->
+<div class="form-group">
+  <label for="dailyConsumption">الاستهلاك اليومي <span>(kWh)</span></label>
+  <input type="number" id="dailyConsumption" placeholder="مثال: 10" min="0.1" step="any">
+</div>
+<div class="form-group">
+  <label for="daytimeConsumption">الاستهلاك النهاري <span>(kWh)</span></label>
+  <input type="number" id="daytimeConsumption" placeholder="مثال: 4" min="0" step="any" value="0">
+</div>
+<div class="form-group">
+  <label for="maxLoad">الحمل الأقصى <span>(kW) — ذروة الاستطاعة المتزامنة</span></label>
+  <input type="number" id="maxLoad" placeholder="مثال: 5.5" min="0.1" step="0.1">
+</div>
+<div class="form-group">
+  <label for="sunHours">ساعات الشمس الذروة <span>(PSH — ساعة)</span></label>
+  <input type="number" id="sunHours" placeholder="مثال: 5" min="0.5" step="any">
+</div>
+<div class="form-group">
+  <label for="systemVoltage">جهد النظام <span>(V)</span></label>
+  <select id="systemVoltage">
+    <option value="">-- اختر الجهد --</option>
+    <option value="12">12V</option><option value="24">24V</option>
+    <option value="48">48V</option><option value="51.2">51.2V (LiFePO4)</option>
+  </select>
+</div>
+<div class="form-group">
+  <label for="panelWatt">قدرة اللوح <span>(W)</span></label>
+  <select id="panelWatt">
+    <option value="">-- اختر اللوح --</option>
+    <option value="300">300W</option><option value="350">350W</option>
+    <option value="450">450W</option><option value="550">550W</option>
+    <option value="570">570W</option><option value="600">600W</option>
+    <option value="650">650W</option><option value="670">670W</option>
+    <option value="700">700W</option><option value="720">720W</option>
+    <option value="750">750W</option><option value="780">780W</option>
+  </select>
+</div>
+<div class="form-group">
+  <label for="weatherCondition">حالة الطقس <span>(عامل تصحيح الإشعاع)</span></label>
+  <select id="weatherCondition">
+    <option value="1.0">مشمس ☀️ (×1.0)</option>
+    <option value="1.15">غائم جزئي ⛅ (×1.15)</option>
+    <option value="1.30">غائم ☁️ (×1.30)</option>
+  </select>
+</div>
+<div class="form-group">
+  <label for="dod">عمق التفريغ <span>(DoD %)</span></label>
+  <input type="number" id="dod" placeholder="مثال: 80" min="10" max="100" step="any">
+</div>
+
+<!-- Load Profile Upload -->
+<div class="form-group full">
+  <label>ملف منحنى الأحمال <span>تحميل ملف JSON للحصول على 24 قيمة ساعة</span></label>
+  <div class="load-profile-actions">
+    <label class="btn" onclick="document.getElementById('loadProfileInput').click()">📂 تحميل ملف JSON</label>
+    <label class="btn primary" onclick="applySampleProfile()">📊 نموذج افتراضي</label>
+    <input type="file" id="loadProfileInput" class="file-input" accept=".json" onchange="handleLoadProfile(event)">
+  </div>
+  <div id="loadProfileSummary" class="load-profile-summary" style="display:none;"></div>
+</div>
+
+<!-- Advanced Accordion -->
+<div class="accordion no-print">
+  <input type="checkbox" id="accordionTrigger">
+  <label for="accordionTrigger" class="accordion-trigger">
+    <span>⚙️ إعدادات متقدمة (HV / العاكس / البطارية / MPPT)</span>
+  </label>
+  <div class="accordion-content">
+  <div class="accordion-body advanced-grid">
+    <div class="form-group">
+      <label>نوع العاكس <span>(اختيار يدوي — تلقائي حسب الحمل ≥30kW)</span></label>
+      <div class="radio-group">
+        <div class="radio-option lv">
+          <input type="radio" id="invTypeAuto" name="inverterType" value="auto" checked>
+          <label for="invTypeAuto">تلقائي <br><span class="type-badge">LV: &lt;30kW / HV: ≥30kW</span></label>
+        </div>
+        <div class="radio-option lv">
+          <input type="radio" id="invTypeLV" name="inverterType" value="LV">
+          <label for="invTypeLV">LV <br><span class="type-badge">48V DC Bus</span></label>
+        </div>
+        <div class="radio-option hv">
+          <input type="radio" id="invTypeHV" name="inverterType" value="HV">
+          <label for="invTypeHV">HV <br><span class="type-badge">200V+ DC Bus</span></label>
+        </div>
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="batteryChemistry">كيمياء البطارية</label>
+      <select id="batteryChemistry">
+        <option value="LiFePO4">LiFePO4</option>
+        <option value="Lead-Acid">Lead-Acid</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label for="cRate">معدل الشحن/التفريغ <span>(C-rate)</span></label>
+      <input type="number" id="cRate" placeholder="مثال: 0.5" min="0.1" max="2" step="0.1" value="0.5">
+    </div>
+    <div class="form-group full">
+      <label for="inverterModel">موديل العاكس <span>(اختياري — يملأ مواصفات MPPT تلقائياً)</span></label>
+      <select id="inverterModel" onchange="applyInverterSpecs(this.value)">
+        <option value="">-- اختر موديل العاكس --</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label for="mpptRange">نطاق MPPT <span>(Vmin - Vmax)</span></label>
+      <input type="text" id="mpptRange" placeholder="مثال: 150-500" pattern="\d+-\d+">
+    </div>
+    <div class="form-group">
+      <label for="mpptCurrent">تيار MPPT الأقصى <span>(A)</span></label>
+      <input type="number" id="mpptCurrent" placeholder="مثال: 32" min="1" step="0.1">
+    </div>
+    <div class="form-group">
+      <label for="parallelCount">عدد العواكس المتوازية <span>(0 = تلقائي، 1-6 يدوي)</span></label>
+      <input type="number" id="parallelCount" min="0" max="16" step="1" value="0" placeholder="0 = حساب تلقائي">
+    </div>
+    <div class="form-group">
+      <label for="cableLength">طول الكابل <span>(متر — من اللوح للعاكس)</span></label>
+      <input type="number" id="cableLength" placeholder="مثال: 20" min="1" step="1" value="15">
+    </div>
+    <div class="form-group">
+      <label for="ambientTemp">درجة الحرارة المحيطة <span>(°م)</span></label>
+      <input type="number" id="ambientTemp" placeholder="مثال: 45" min="-20" max="70" step="1" value="35">
+    </div>
+    <!-- Cost Assumptions -->
+    <div class="form-group">
+      <label for="costPanel">سعر اللوح <span>($/W)</span></label>
+      <input type="number" id="costPanel" placeholder="0.25" min="0.01" step="0.01" value="0.25">
+    </div>
+    <div class="form-group">
+      <label for="costInverter">سعر العاكس <span>($/W)</span></label>
+      <input type="number" id="costInverter" placeholder="0.15" min="0.01" step="0.01" value="0.15">
+    </div>
+    <div class="form-group">
+      <label for="costBattery">سعر البطارية <span>($/kWh)</span></label>
+      <input type="number" id="costBattery" placeholder="180" min="1" step="1" value="180">
+    </div>
+    <div class="form-group">
+      <label for="tariff">تعرفة الكهرباء <span>($/kWh)</span></label>
+      <input type="number" id="tariff" placeholder="0.47" min="0.001" step="0.001" value="0.47">
+    </div>
+  </div>
+  </div>
+</div>
+
+<div id="errorBox" class="error-box full"></div>
+<div id="validationBox" class="validation-box" style="display:none;"></div>
+<button class="btn-calc" onclick="handleCalculate()">🔢 حساب التصميم</button>
+<button class="btn-print no-print" onclick="handlePrint()">🖨️ طباعة PDF</button>
+</div>
+</div>
+
+<div id="resultsSection" class="results-section">
+  <div class="results-title">📊 نتائج التصميم</div>
+  <div class="system-badge"><span id="systemBadgeLV" class="tag tag-lv">نظام LV — جهد منخفض</span><span id="systemBadgeHV" class="tag tag-hv" style="display:none;">نظام HV — جهد عالي</span></div>
+  <div id="resultsGrid" class="results-grid"></div>
+  <div id="intelligenceBox" style="margin-bottom:16px;"></div>
+  <div id="mpptSection" style="margin:16px 0;">
+    <div class="results-title">📡 تحليل MPPT المزدوج (Dual MPPT)</div>
+    <div id="mpptGrid" class="mppt-grid"></div>
+  </div>
+  <div id="stringVizSection" style="margin:16px 0;">
+    <div class="results-title">🔗 تمثيل السلاسل (String Configuration)</div>
+    <div id="stringVizContainer" class="string-viz"></div>
+  </div>
+  <div id="wiringSection">
+    <div class="results-title">🔌 الكابلات والقواطع</div>
+    <div id="wiringGrid" class="results-grid"></div>
+  </div>
+  <div id="economicSection" style="margin:16px 0;">
+    <div class="results-title">💰 التقرير الاقتصادي</div>
+    <div id="economicGrid" class="results-grid"></div>
+  </div>
+  <div id="chartSection" style="margin:16px 0;">
+    <div class="results-title">📈 منحنى الأحمال اليومي</div>
+    <div id="loadChartContainer" class="chart-container"></div>
+  </div>
+</div>
+
+<div id="printReport" class="print-report"></div>
+<div class="footer">☀️ حاسبة أنظمة الطاقة الشمسية © 2026 — المهندس المنسق: سليم السقاف | 770338777</div>
+</div>
+
+<div id="offlineBanner">🌐 أنت غير متصل — بعض الميزات قد لا تعمل</div>
+<div id="installBanner">📲 ثبّت تطبيق شمسي للاستخدام دون اتصال</div>
+<div class="toast" id="toast"></div>
+
+<script type="module" src="assets/app.js"></script>
+<script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', function() {
+    navigator.serviceWorker.register('sw.js').then(function(reg) {
+      console.log('[SW] Registered:', reg.scope);
+    }, function(err) {
+      console.log('[SW] Registration failed:', err);
+    });
+  });
+  // Online/offline detection
+  var offlineBanner = document.getElementById('offlineBanner');
+  function updateOnlineStatus() {
+    offlineBanner.style.display = navigator.onLine ? 'none' : 'block';
+  }
+  window.addEventListener('online', updateOnlineStatus);
+  window.addEventListener('offline', updateOnlineStatus);
+  updateOnlineStatus();
+  // Install prompt
+  var deferredPrompt;
+  var installBanner = document.getElementById('installBanner');
+  window.addEventListener('beforeinstallprompt', function(e) {
+    e.preventDefault();
+    deferredPrompt = e;
+    installBanner.style.display = 'block';
+  });
+  installBanner.addEventListener('click', function() {
+    if (deferredPrompt) {
+      deferredPrompt.prompt();
+      deferredPrompt.userChoice.then(function() { deferredPrompt = null; });
+    }
+  });
+  window.addEventListener('appinstalled', function() {
+    installBanner.style.display = 'none';
+    var t = document.getElementById('toast');
+    t.textContent = '✅ تم تثبيت التطبيق بنجاح';
+    t.classList.add('show');
+    setTimeout(function(){ t.classList.remove('show'); }, 3000);
+  });
+}
+</script>
+</body>
+</html>

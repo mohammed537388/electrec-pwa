@@ -1,0 +1,15 @@
+﻿{
+  "appId": "com.shamsi.solar",
+  "appName": "شمسي",
+  "webDir": "www",
+  "server": {
+    "androidScheme": "https",
+    "hostname": "app"
+  },
+  "plugins": {
+    "SplashScreen": {
+      "launchAutoHide": true,
+      "backgroundColor": "#f59e0b"
+    }
+  }
+}
