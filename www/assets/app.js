@@ -1171,13 +1171,31 @@ function generatePieChart(labels, values, colors, title) {
 }
 
 function handlePrint() {
-  // Build print report dynamically before printing
   var report = generatePrintReport();
-  document.getElementById('printReport').innerHTML = report;
-  // Delay to allow DOM to render
+  var container = document.getElementById('printReport');
+  container.innerHTML = report;
+  var toast = document.getElementById('toast');
+  toast.textContent = '⏳ جاري تحضير التقرير PDF...';
+  toast.classList.add('show');
+  document.body.classList.add('pdf-export');
   setTimeout(function() {
-    window.print();
-  }, 100);
+    var opt = {
+      margin: [10, 10, 10, 10],
+      filename: 'تقرير-شمسي.pdf',
+      image: { type: 'jpeg', quality: 0.98 },
+      html2canvas: { scale: 2, useCORS: true, letterRendering: true },
+      jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+    };
+    html2pdf().set(opt).from(container).save().then(function() {
+      document.body.classList.remove('pdf-export');
+      toast.textContent = '✅ تم تحميل التقرير PDF بنجاح';
+      setTimeout(function() { toast.classList.remove('show'); }, 3000);
+    }).catch(function(err) {
+      document.body.classList.remove('pdf-export');
+      toast.textContent = '❌ فشل تحميل التقرير: ' + err.message;
+      setTimeout(function() { toast.classList.remove('show'); }, 4000);
+    });
+  }, 200);
 }
 
 function generatePrintReport() {
