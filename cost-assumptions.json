@@ -1,0 +1,13 @@
+{
+  "currency": "USD",
+  "panel": { "costPerW": 0.25 },
+  "inverter": { "costPerW": 0.15, "hvMultiplier": 1.3 },
+  "battery": { "costPerKwhLiFePO4": 180, "costPerKwhLeadAcid": 120 },
+  "bms": { "costPerUnit": 150 },
+  "wiring": { "costPerMeter": 3.5, "costPerBreaker": 25 },
+  "installation": { "costPerW": 0.10 },
+  "otherCosts": { "permits": 200, "logistics": 0.05 },
+  "tariff": { "gridPricePerKwh": 0.47, "feedInPricePerKwh": 0.04 },
+  "analysis": { "years": 25, "discountRate": 0.05, "degradationAnnual": 0.005 },
+  "notes": "Default values for Yemen market Q3 2026. Adjust per project."
+}

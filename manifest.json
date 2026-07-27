@@ -1,0 +1,101 @@
+{
+  "name": "حاسبة أنظمة الطاقة الشمسية",
+  "short_name": "SolarCalc",
+  "description": "أداة تصميم هندسية شاملة لأنظمة تخزين الطاقة الشمسية — المهندس: محمد هاشم | 777536388",
+  "start_url": "/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#f8fafc",
+  "theme_color": "#f59e0b",
+  "lang": "ar",
+  "dir": "rtl",
+  "scope": "/",
+  "icons": [
+    {
+      "src": "icons/icon-72.png",
+      "sizes": "72x72",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icons/icon-96.png",
+      "sizes": "96x96",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icons/icon-128.png",
+      "sizes": "128x128",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icons/icon-144.png",
+      "sizes": "144x144",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icons/icon-152.png",
+      "sizes": "152x152",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icons/icon-384.png",
+      "sizes": "384x384",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icons/maskable-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "icons/maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "icons/apple-touch-icon.png",
+      "sizes": "180x180",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ],
+  "categories": ["utilities", "productivity", "education"],
+  "shortcuts": [
+    {
+      "name": "🆕 حساب جديد",
+      "short_name": "جديد",
+      "description": "ابدأ تصميم نظام شمسي جديد",
+      "url": "/?new=1",
+      "icons": [{ "src": "icons/icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "📊 ملف نموذجي",
+      "short_name": "نموذج",
+      "description": "حمل ملف منحنى أحمال نموذجي",
+      "url": "/?sample=1",
+      "icons": [{ "src": "icons/icon-192.png", "sizes": "192x192" }]
+    }
+  ],
+  "screenshots": [],
+  "prefer_related_applications": false,
+  "related_applications": []
+}
