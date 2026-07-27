@@ -112,7 +112,7 @@ function generateInverterDBCode(db) {
       720:{Vmp:45.5,Voc:54.5,Imp:15.82,Isc:16.69},
       750:{Vmp:45.8,Voc:54.9,Imp:16.38,Isc:17.26},
       780:{Vmp:46.1,Voc:55.3,Imp:16.92,Isc:17.83}
-    }).map(([k,v]) => `  ${k}:${JSON.stringify(v)}`),
+    }).map(([k,v], i, arr) => `  ${k}:${JSON.stringify(v)}${i < arr.length - 1 ? ',' : ''}`),
     '};',
     '',
     'export var INVERTER_DB = ['
