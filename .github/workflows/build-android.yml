@@ -26,6 +26,7 @@ jobs:
         run: |
           mkdir -p www
           cp -r index.html manifest.json sw.js icons assets www/
+          chmod +x node_modules/.bin/cap
           npx cap init "شمسي" "com.shamsi.solar" --web-dir www --confirm
           npx cap copy android
 
