@@ -1,5 +1,5 @@
-# PROJECT_MAP.md — حاسبة أنظمة الطاقة الشمسية
-> Last Updated: 2026-07-27 | Version: 2.18.0 | Engineer: محمد هاشم | 777536388
+﻿# PROJECT_MAP.md — حاسبة أنظمة الطاقة الشمسية
+> Last Updated: 2026-07-27 | Version: 2.18.0 | Engineer: سليم السقاف | 770338777
 
 ---
 
@@ -62,7 +62,7 @@ User ──→ Form (14 inputs + Load Profile file upload)
     ├─ Load Profile Chart (SVG Bar)
     ├─ Cost Distribution Chart (SVG Pie)
     ├─ Engineering Recommendation
-    └─ Engineer Stamp (محمد هاشم | 777536388)
+    └─ Engineer Stamp (سليم السقاف | 770338777)
 ```
 
 ---

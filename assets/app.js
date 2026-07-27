@@ -1218,7 +1218,7 @@ function generatePrintReport() {
   );
   
   return '<div class="print-section">' +
-    '<div class="print-header"><div class="print-logo">☀️</div><div class="print-title">تقرير تصميم نظام الطاقة الشمسية</div><div class="print-meta">' + today + ' | المهندس المنسق: محمد هاشم</div></div>' +
+    '<div class="print-header"><div class="print-logo">☀️</div><div class="print-title">تقرير تصميم نظام الطاقة الشمسية</div><div class="print-meta">' + today + ' | المهندس المنسق: سليم السقاف</div></div>' +
     '<div class="print-section"><div class="print-section-title">📋 الملخص التنفيذي</div>' +
     '<div class="print-summary-text">' + summaryText + '</div></div>' +
     '<div class="print-section"><div class="print-section-title">📊 بيانات المشروع</div>' +
@@ -1254,8 +1254,8 @@ function generatePrintReport() {
     '<div class="print-section"><div class="print-section-title">🔧 التوصية الهندسية</div>' +
     '<div class="print-summary-text">' + recommendation + '</div></div>' +
     '<div class="print-section"><div class="print-section-title">👤 ختم المهندس</div>' +
-    '<div class="engineer-stamp"><div class="stamp-seal">☀️</div><div class="stamp-name">المهندس المنسق: محمد هاشم</div><div class="stamp-phone">هاتف: 777536388</div><div class="stamp-date">تاريخ التوقيع: ' + today + '</div></div></div>' +
-    '<div class="print-footer"><p>☀️ حاسبة أنظمة الطاقة الشمسية — تقرير تصميم هندسي</p><p>تم الإنشاء بواسطة المهندس المنسق: محمد هاشم | 777536388</p></div>' +
+    '<div class="engineer-stamp"><div class="stamp-seal">☀️</div><div class="stamp-name">المهندس المنسق: سليم السقاف</div><div class="stamp-phone">هاتف: 770338777</div><div class="stamp-date">تاريخ التوقيع: ' + today + '</div></div></div>' +
+    '<div class="print-footer"><p>☀️ حاسبة أنظمة الطاقة الشمسية — تقرير تصميم هندسي</p><p>تم الإنشاء بواسطة المهندس المنسق: سليم السقاف | 770338777</p></div>' +
     '</div>';
 }
 
