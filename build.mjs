@@ -200,7 +200,7 @@ await generateIcons();
 function generateSW(db) {
   const precacheUrls = [
     './', './index.html', './manifest.json',
-    './assets/styles.css', './assets/app.js', './assets/inverter-db.js',
+    './assets/styles.css', './assets/app.js', './assets/inverter-db.js', './assets/html2pdf.bundle.min.js',
     './icons/icon.svg',
     './icons/icon-72.png', './icons/icon-96.png', './icons/icon-128.png',
     './icons/icon-144.png', './icons/icon-152.png', './icons/icon-192.png',
