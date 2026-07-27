@@ -26,7 +26,6 @@ jobs:
         run: |
           mkdir -p www
           cp -r index.html manifest.json sw.js icons assets www/
-          node node_modules/@capacitor/cli/bin/capacitor init "شمسي" "com.shamsi.solar" --web-dir www --confirm
           node node_modules/@capacitor/cli/bin/capacitor copy android
 
       - name: Setup Java 17
