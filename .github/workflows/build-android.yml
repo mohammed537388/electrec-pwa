@@ -1,4 +1,4 @@
-name: Build Android APK
+﻿name: Build Android APK
 
 on:
   push:
@@ -10,23 +10,23 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22
 
       - name: Install dependencies
-        run: npm ci
+        run: |
+          npm install
+          npm install @capacitor/core @capacitor/cli @capacitor/android
 
       - name: Build web assets
         run: node build.mjs
 
       - name: Setup Capacitor
         run: |
-          npm install @capacitor/core @capacitor/cli @capacitor/android
-          npx cap init "شمسي" "com.shamsi.solar" --web-dir www --confirm
           mkdir -p www
           cp -r index.html manifest.json sw.js icons assets www/
+          npx cap init "شمسي" "com.shamsi.solar" --web-dir www --confirm
           npx cap copy android
 
       - name: Setup Java 17
