@@ -768,3 +768,52 @@ node build.mjs
 - Generates `assets/inverter-db.js` (ESM) from `inverters-catalog.json`
 - Generates PWA icons from `icons/icon.svg` via sharp
 - Generates `sw.js` with up-to-date precache manifest
+
+
+---
+
+## [INVERTER_CATALOG] — Unified Manufacturer Datasource
+> Auto-generated from `inverters-catalog.json` on 2026-07-27
+
+### Summary
+| Metric | Value |
+|--------|-------|
+| Manufacturers | 5 |
+| Series | 14 |
+| **Total Models** | **60** |
+| Type Distribution | LV: 43, HV: 17 |
+| Phase Distribution | 1φ: 26, 3φ: 34 |
+
+### Manufacturers & Models
+| Brand | Series | Models | Type | Phase | Battery | MPPT Range | Max Charge A | Efficiency |
+|-------|--------|--------|------|-------|---------|------------|--------------|------------|
+| Solis (Ginlong) | S6-EH1P(3-8)K-L-PLUS | 5 | LV | 1-phase | 40-60V | 90-435V | 70/80/112/135/190A | 96.2% |
+| Solis (Ginlong) | S6-EH1P(9-10)K-L-PLUS(21A) | 2 | LV | 1-phase | 40-60V | 90-435V | 210/210A | 97.5% |
+| Solis (Ginlong) | S6-EH1P(9.9-18)K03-NV-YD-L | 5 | LV | 1-phase | 40-60V | 100-450V | 208/250/290/290/320A | 97.6% |
+| Solis (Ginlong) — HV Series | S6-EH3P(15-30)K-H | 3 | HV | 3-phase | 120-600V | 200-850V | 240/320/480A | 98.3% |
+| Solis (Ginlong) — HV Series | S6-EH3P(12-20)K-H (4-MPPT) | 3 | HV | 3-phase | 120-800V | 200-850V | 50/50/50A | 97.7% |
+| Solis (Ginlong) — HV Series | S6-EH3P(29.9-50)K-H | 4 | HV | 3-phase | 150-800V | 150-850V | 140/140/140/140A | 97.8% |
+| Solis (Ginlong) — HV Series | S6-EH3P(75-125)K10-NV-YD-H | 5 | HV | 3-phase | 300-950V | 150-950V | 200/200/200/200/200A | 97.5% |
+| Voltronic Power | Axpert Ultra | 2 | LV | 1-phase | 40-63V | 90-450V | 150/150A | 93.0% |
+| Megarevo (Revo) | G2S Series | 8 | LV | 1-phase | 40-58V | 100-430V | 60/72/80/92/100/120/160/200A | 98.0% |
+| Deye | SUN-(5-12)K-SG04LP3-EU | 5 | LV | 3-phase | 40-60V | 200-650V | 120/150/190/210/240A | 97.6% |
+| Deye | SUN-(30-50)K-SG01HP3-EU-HV | 2 | HV | 3-phase | 180-700V | 200-800V | 450/600A | 98.2% |
+| Deye | SUN-(3-6)K-SG04LP1-EU | 4 | LV | 1-phase | 40-60V | 150-425V | 70/90/120/135A | 97.6% |
+| Deye | SUN-(3-12)K-SG05LP3-EU-SM2 | 7 | LV | 3-phase | 40-60V | 200-650V | 70/95/120/135/190/210/240A | 97.6% |
+| Deye | SUN-(14-20)K-SG05LP3-EU-SM2 | 5 | LV | 3-phase | 40-60V | 160-650V | 260/280/300/330/350A | 97.6% |
+
+### Source URLs (Official Manufacturer Datasheets)
+| Manufacturer | URL |
+|--------------|-----|
+| Solis | https://www.solisinverters.com/dataFile/2c9fafbf8d3b8bd3018d58b55ca60137 |
+| Voltronic (Axpert) | https://voltronicpower.com/en-US/Product/Detail/Axpert-Ultra-8KW-11KW |
+| Megarevo (G2S) | https://www.megarevo.com/g2s-series-energy-storage-inverter.html |
+| Deye | https://www.deyeinverter.com/deyeinverter/2024/10/21/datasheet_sun-5-12k-sg04lp3_241021_en.pdf |
+
+### Build Pipeline
+```bash
+node build.mjs
+```
+- Generates `assets/inverter-db.js` (ESM) from `inverters-catalog.json`
+- Generates PWA icons from `icons/icon.svg` via sharp
+- Generates `sw.js` with up-to-date precache manifest
