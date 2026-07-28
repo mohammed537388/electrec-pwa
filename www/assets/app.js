@@ -1177,42 +1177,53 @@ function handlePrint() {
   toast.textContent = '⏳ جاري تحضير التقرير PDF...';
   toast.classList.add('show');
   document.body.classList.add('pdf-export');
-  setTimeout(async function() {
-    try {
-      var opt = {
-        margin: [10, 10, 10, 10],
-        filename: 'تقرير-شمسي.pdf',
-        image: { type: 'jpeg', quality: 0.98 },
-        html2canvas: { scale: 2, useCORS: true, letterRendering: true },
-        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
-      };
-      var isNative = !!(window.Capacitor && window.Capacitor.isNativePlatform());
-      if (isNative) {
-        var pdf = await html2pdf().set(opt).from(container).toPdf();
-        var dataUri = pdf.output('datauristring');
-        var base64 = dataUri.split(',')[1];
-        var savedFile = await Capacitor.Plugins.Filesystem.writeFile({
-          path: 'report.pdf',
-          data: base64,
-          directory: 'CACHE',
-          encoding: 'BASE64'
-        });
-        await Capacitor.Plugins.Share.share({
-          title: 'تقرير شمسي',
-          text: 'تقرير النظام الشمسي',
-          url: savedFile.uri,
-          dialogTitle: 'مشاركة التقرير'
-        });
-      } else {
-        await html2pdf().set(opt).from(container).save();
-      }
-      document.body.classList.remove('pdf-export');
-      toast.textContent = '✅ تم تحميل التقرير PDF بنجاح';
-      setTimeout(function() { toast.classList.remove('show'); }, 3000);
-    } catch (err) {
-      document.body.classList.remove('pdf-export');
-      toast.textContent = '❌ فشل تحميل التقرير: ' + err.message;
-      setTimeout(function() { toast.classList.remove('show'); }, 4000);
+  setTimeout(function() {
+    var opt = {
+      margin: [10, 10, 10, 10],
+      filename: 'تقرير-شمسي.pdf',
+      image: { type: 'jpeg', quality: 0.98 },
+      html2canvas: { scale: 2, useCORS: true, letterRendering: true },
+      jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+    };
+    var isNative = !!(window.Capacitor && window.Capacitor.isNativePlatform());
+    if (isNative) {
+      html2pdf().set(opt).from(container).outputPdf('datauristring').then(async function(pdfAsString) {
+        try {
+          var base64Data = pdfAsString.split(',')[1];
+          var writeResult = await Capacitor.Plugins.Filesystem.writeFile({
+            path: 'Solar_Report.pdf',
+            data: base64Data,
+            directory: Capacitor.Plugins.Filesystem.Directory.Cache,
+            encoding: 'BASE64'
+          });
+          await Capacitor.Plugins.Share.share({
+            title: 'تقرير نظام الطاقة الشمسية',
+            url: writeResult.uri,
+            dialogTitle: 'مشاركة التقرير مع العميل'
+          });
+          document.body.classList.remove('pdf-export');
+          toast.textContent = '✅ تم تحميل التقرير PDF بنجاح';
+          setTimeout(function() { toast.classList.remove('show'); }, 3000);
+        } catch (err) {
+          document.body.classList.remove('pdf-export');
+          toast.textContent = '❌ فشل حفظ أو مشاركة الملف: ' + err.message;
+          setTimeout(function() { toast.classList.remove('show'); }, 4000);
+        }
+      }).catch(function(err) {
+        document.body.classList.remove('pdf-export');
+        toast.textContent = '❌ فشل توليد التقرير: ' + err.message;
+        setTimeout(function() { toast.classList.remove('show'); }, 4000);
+      });
+    } else {
+      html2pdf().set(opt).from(container).save().then(function() {
+        document.body.classList.remove('pdf-export');
+        toast.textContent = '✅ تم تحميل التقرير PDF بنجاح';
+        setTimeout(function() { toast.classList.remove('show'); }, 3000);
+      }).catch(function(err) {
+        document.body.classList.remove('pdf-export');
+        toast.textContent = '❌ فشل تحميل التقرير: ' + err.message;
+        setTimeout(function() { toast.classList.remove('show'); }, 4000);
+      });
     }
   }, 200);
 }
