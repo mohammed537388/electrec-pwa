@@ -1171,30 +1171,49 @@ function generatePieChart(labels, values, colors, title) {
 }
 
 function handlePrint() {
-  var report = generatePrintReport();
-  var container = document.getElementById('printReport');
-  container.innerHTML = report;
   var toast = document.getElementById('toast');
+  var container = document.getElementById('printReport');
+  container.innerHTML = generatePrintReport();
   toast.textContent = '⏳ جاري تحضير التقرير PDF...';
   toast.classList.add('show');
   document.body.classList.add('pdf-export');
-  setTimeout(function() {
-    var opt = {
-      margin: [10, 10, 10, 10],
-      filename: 'تقرير-شمسي.pdf',
-      image: { type: 'jpeg', quality: 0.98 },
-      html2canvas: { scale: 2, useCORS: true, letterRendering: true },
-      jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
-    };
-    html2pdf().set(opt).from(container).save().then(function() {
+  setTimeout(async function() {
+    try {
+      var opt = {
+        margin: [10, 10, 10, 10],
+        filename: 'تقرير-شمسي.pdf',
+        image: { type: 'jpeg', quality: 0.98 },
+        html2canvas: { scale: 2, useCORS: true, letterRendering: true },
+        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+      };
+      var isNative = !!(window.Capacitor && window.Capacitor.isNativePlatform());
+      if (isNative) {
+        var pdf = await html2pdf().set(opt).from(container).toPdf();
+        var dataUri = pdf.output('datauristring');
+        var base64 = dataUri.split(',')[1];
+        var savedFile = await Capacitor.Plugins.Filesystem.writeFile({
+          path: 'report.pdf',
+          data: base64,
+          directory: 'CACHE',
+          encoding: 'BASE64'
+        });
+        await Capacitor.Plugins.Share.share({
+          title: 'تقرير شمسي',
+          text: 'تقرير النظام الشمسي',
+          url: savedFile.uri,
+          dialogTitle: 'مشاركة التقرير'
+        });
+      } else {
+        await html2pdf().set(opt).from(container).save();
+      }
       document.body.classList.remove('pdf-export');
       toast.textContent = '✅ تم تحميل التقرير PDF بنجاح';
       setTimeout(function() { toast.classList.remove('show'); }, 3000);
-    }).catch(function(err) {
+    } catch (err) {
       document.body.classList.remove('pdf-export');
       toast.textContent = '❌ فشل تحميل التقرير: ' + err.message;
       setTimeout(function() { toast.classList.remove('show'); }, 4000);
-    });
+    }
   }, 200);
 }
 
