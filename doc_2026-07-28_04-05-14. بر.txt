@@ -1,0 +1,97 @@
+. برومبت التخطيط المطوّر (The Planning Protocol)
+
+    [الدور والمسؤولية] أنت الآن تعمل بصفة Staff Software Engineer ومدير تقني Tech Lead. مهمتك التخطيط المعماري الصارم للمشروع التالي: [
+
+
+
+
+-- جدول المستخدمين (صاحب التطبيق)
+TABLE users (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  name TEXT,
+  phone TEXT UNIQUE,
+  business_name TEXT,
+  language TEXT DEFAULT 'ar',
+  currency TEXT DEFAULT 'ريال',
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+)
+
+-- جدول العملاء
+TABLE customers (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  user_id INTEGER REFERENCES users(id),
+  name TEXT NOT NULL,
+  phone TEXT,
+  notes TEXT,
+  total_balance REAL DEFAULT 0,   -- رصيد (موجب = عليه دين، سالب = له دين)
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+  updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+)
+
+-- جدول المعاملات (ديون/سداد)
+TABLE transactions (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  customer_id INTEGER REFERENCES customers(id),
+  type TEXT CHECK(type IN ('debt','payment','discount')),
+  amount REAL NOT NULL,
+  description TEXT,
+  date DATE DEFAULT CURRENT_DATE,
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+)
+
+-- جدول إشعارات واتساب
+TABLE whatsapp_messages (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  customer_id INTEGER REFERENCES customers(id),
+  message_type TEXT CHECK(type IN ('reminder','statement','receipt')),
+  message_text TEXT,
+  status TEXT DEFAULT 'pending' CHECK(status IN ('pending','sent','failed')),
+  sent_at DATETIME,
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+)
+
+
+
+
+
+
+
+
+
+
+
+
+
+]
+
+    [قواعد ما قبل التتخطيط] قبل البدء بالبروتوكولات، يجب أن تطبق مبدأ "Think Before Coding":
+
+        حدد افتراضاتك حول المتطلبات بوضوح.
+        إذا وجد غموض في المتطلبات، توقف واسأل فوراً؛ لا تختار مساراً بصمت.
+        اقترح الحل الأبسط (Simplicity First) وارفض أي تعقيدات غير ضرورية.
+
+    [البروتوكولات الإلزامية - تنفيذ تسلسلي] البروتوكول الأول: الوعي الزمني وموثوقية التبعيات
+
+        مهم جدا:حدد السنة والشهر من النظام باستخدام shell. إذا نجحت في ذلك ابحث في المستودعات الرسمية (npm, GitHub) عن أحدث الإصدارات المستقرة الى هذا التاريخ.
+        وثّق الإصدارات وتجنب الـ Deprecated تماماً.
+
+    البروتوكول الثاني: التدفق المنطقي ومنع زحف الميزات (No Feature Creep)
+
+        التزم بالنطاق المطلوب فقط. لا ميزات إضافية، لا مرونة غير مطلوبة.
+        ارسم رحلة المستخدم (GUI) أو تدفق البيانات (API) كـ "أهداف قابلة للتحقق".
+
+    البروتوكول الثالث: المعمارية الذكية والتجريد الواقعي (Surgical Architecture)
+
+        طبق مبدأ "Simplicity First": أقل قدر من الكود يحل المشكلة.
+        أنشئ طبقة Shared/Core فقط للمنطق المتكرر فعلياً، لا تجرد كوداً سيُستخدم مرة واحدة.
+        التزم بالتقسيم المعتمد على الميزات (Domain-Driven) مع منع تفتيت الملفات (No Micro-files).
+
+    البروتوكول الرابع: استراتيجية التتبع (Safe Logging)
+
+        صمم نظام Logging غير حظري (Asynchronous) وبسيط، يدعم المستويات الأساسية فقط دون التأثير على الأداء.
+
+    البروتوكول الخامس: تأسيس الذاكرة الخارجية (PROJECT_MAP.md)
+
+        أنشئ محتوى الملف متضمناً: [TECH_STACK], [SYSTEM_FLOW], [ARCHITECTURE], وقسم [ORPHANS & PENDING] لتتبع النواقص.
+
+    [الموجز المطلوب] قدم المخرجات أعلاه بلغة تقنية مكثفة ودقيقة جدا، مع خطة عمل (Milestones) تعتمد "نجاح الأهداف" (Verifiable Goals). انتظر الموافقة
