@@ -1187,31 +1187,27 @@ function handlePrint() {
     };
     var isNative = !!(window.Capacitor && window.Capacitor.isNativePlatform());
     if (isNative) {
-      html2pdf().set(opt).from(container).outputPdf('datauristring').then(async function(pdfAsString) {
-        try {
-          var base64Data = pdfAsString.split(',')[1];
-          var writeResult = await Capacitor.Plugins.Filesystem.writeFile({
-            path: 'Solar_Report.pdf',
-            data: base64Data,
-            directory: 'CACHE',
-            encoding: 'BASE64'
-          });
-          await Capacitor.Plugins.Share.share({
-            title: 'تقرير نظام الطاقة الشمسية',
-            url: writeResult.uri,
-            dialogTitle: 'مشاركة التقرير مع العميل'
-          });
-          document.body.classList.remove('pdf-export');
-          toast.textContent = '✅ تم تحميل التقرير PDF بنجاح';
-          setTimeout(function() { toast.classList.remove('show'); }, 3000);
-        } catch (err) {
-          document.body.classList.remove('pdf-export');
-          toast.textContent = '❌ فشل حفظ أو مشاركة الملف: ' + err.message;
-          setTimeout(function() { toast.classList.remove('show'); }, 4000);
-        }
+      html2pdf().set(opt).from(container).toPdf().then(function(pdf) {
+        var pdfAsString = pdf.output('datauristring');
+        var base64Data = pdfAsString.split('base64,')[1];
+        return Capacitor.Plugins.Filesystem.writeFile({
+          path: 'Solar_Report.pdf',
+          data: base64Data,
+          directory: 'DATA'
+        });
+      }).then(function(writeResult) {
+        return Capacitor.Plugins.Share.share({
+          title: 'تقرير نظام الطاقة الشمسية',
+          url: writeResult.uri,
+          dialogTitle: 'مشاركة التقرير مع العميل'
+        });
+      }).then(function() {
+        document.body.classList.remove('pdf-export');
+        toast.textContent = '✅ تم تحميل التقرير PDF بنجاح';
+        setTimeout(function() { toast.classList.remove('show'); }, 3000);
       }).catch(function(err) {
         document.body.classList.remove('pdf-export');
-        toast.textContent = '❌ فشل توليد التقرير: ' + err.message;
+        toast.textContent = '❌ فشل التقرير: ' + err.message;
         setTimeout(function() { toast.classList.remove('show'); }, 4000);
       });
     } else {
