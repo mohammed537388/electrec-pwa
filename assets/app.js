@@ -1187,8 +1187,7 @@ function handlePrint() {
     };
     var isNative = !!(window.Capacitor && window.Capacitor.isNativePlatform());
     if (isNative) {
-      html2pdf().set(opt).from(container).toPdf().then(function(pdf) {
-        var pdfAsString = pdf.output('datauristring');
+      html2pdf().set(opt).from(container).outputPdf('datauristring').then(function(pdfAsString) {
         var base64Data = pdfAsString.split('base64,')[1];
         return Capacitor.Plugins.Filesystem.writeFile({
           path: 'Solar_Report.pdf',
