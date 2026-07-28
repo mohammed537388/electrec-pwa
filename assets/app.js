@@ -1193,7 +1193,7 @@ function handlePrint() {
           var writeResult = await Capacitor.Plugins.Filesystem.writeFile({
             path: 'Solar_Report.pdf',
             data: base64Data,
-            directory: Capacitor.Plugins.Filesystem.Directory.Cache,
+            directory: 'CACHE',
             encoding: 'BASE64'
           });
           await Capacitor.Plugins.Share.share({
